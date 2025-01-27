@@ -1,281 +1,188 @@
 "use client";
+import {useEffect, useState} from "react";
+import Link from "next/link";
 
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import Header from '@/app/components/Layout/Header'
-import Footer from '@/app/components/Layout/Footer'
-import {useState} from "react";
+export default function Footer() {
+  const [search, setSearch] = useState(false)
+  const [sidebar, setSidebar] = useState(false)
 
-export default function Page() {
-  const [popup, setPopup] = useState(false)
   return (
-    <div>
+    <>
+      <header>
+        <div className="wrapper">
+          <div className="header_items">
+            <div className="header_logo">
+              <a href="/">
+							<span>
+								<img
+                  src="img/logo.jpg"
+                  alt="Массаж и Спа процедуры - Адлер"
+                />
+							</span>
+                <span>Атмосферные спа-салоны<br/>в Адлере</span>
+              </a>
+            </div>
+            <div className="header_search_wrapper">
+              <div className="header_filters_btn">
+							<span className="header_filters_icon">
+								<img src="./img/filters_icon.webp" alt="filters_icon"/>
+							</span>
+                <span className="header_close_icon">
+								<img src="img/close_icon.webp" alt="close_icon"/>
 
-      <div className="s1" id="s1">
-        <div className="s1_bg_line">
-          <img src="img/line.png" alt="line"/>
-          <img src="img/line.png" alt="line"/>
-        </div>
-        <div className="wrapper">
-          <div className="s1_items">
-            <div className="s1_left">
-              <h1>Массаж в Адлере</h1>
-              <h2>
-                Процедуры для тела и лица, программы для женщины, мужчины или
-                двоих
-              </h2>
-              <div className="s1_btn btn_to">
-                <a href="tel:+79965091011" className="btn">Позвонить</a>
+							</span>
+                <span className="filters_btn_title">Фильтры</span>
               </div>
-              <div className="s1_left_img">
-                <img src="img/s1_1.png" alt="Массаж в спа салоне Адлера"/>
-              </div>
-            </div>
-            <div className="s1_right">
-              <img src="img/s1_img.png" alt="Массаж-цена в Адлере"/>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="s2" id="s2">
-        <div className="s1_bg_line">
-          <img src="img/line.png" alt="line"/>
-          <img src="img/line.png" alt="line"/>
-        </div>
-        <div className="wrapper">
-          <div className="s2_content">
-            <div className="s2_rose">
-              <img src="img/rose2.png" alt="Спа массаж в Адлере"/>
-            </div>
-            <h2>Виды программ</h2>
-            <div className="subtitle">
-              Если вы хотите удивить и обрадовать себя или того, кто вам
-              небезразличен, посетите или вручите подарочный сертификат на массаж
-              и spa-уходы для приятного отдыха в спа-салоне Адлера, который
-              даст возможность испытать чудотворное действие древнейших
-              оздоравливающих практик.
-            </div>
-            <div className="s2_items">
-              <div className="s2_item">
-                <div className="s2_item_img">
-                  <div className="screen_img">
-                    <img
-                      src="img/s2_1.jpg"
-                      alt="Массаж девушке в спа-салоне Адлера"
-                    />
-                  </div>
+              <div className="header_searchbar" onClick={() => setSearch(true)}>
+                <div className='search_icon'>
+
                 </div>
-                <div className="s2_item_title">Для женщин</div>
-                <div className="s2_item_btn btn_to">
-                  <a href="#s4" className="btn">Перейти</a>
-                </div>
-              </div>
-              <div className="s2_item">
-                <div className="s2_item_img">
-                  <div className="screen_img">
-                    <img
-                      src="img/s2_2.jpg"
-                      alt="Спа массаж для мужчины Адлера"
-                    />
-                  </div>
-                </div>
-                <div className="s2_item_title">Для мужчин</div>
-                <div className="s2_item_btn btn_to">
-                  <a href="#s5" className="btn">Перейти</a>
-                </div>
-              </div>
-              <div className="s2_item">
-                <div className="s2_item_img">
-                  <div className="screen_img">
-                    <img
-                      src="img/s2_3.jpg"
-                      alt="Спа-массаж для двоих в Адлере"
-                    />
-                  </div>
-                </div>
-                <div className="s2_item_title">Для двоих</div>
-                <div className="s2_item_btn btn_to">
-                  <a href="#s6" className="btn">Перейти</a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="s3" id="s23">
-        <div className="wrapper">
-          <h2>Что вас ждёт в нашем салоне</h2>
-          <div className="subtitle">
-            Интерьер выполнен в стиле Тайского островного пляжного отдыха со всеми
-            его атрибутами – водой и теплом, вкусными напитками и приятным досугом
-          </div>
-          <div className="s3_row">
-            <div className="s3_row_item">
-              <div className="s3_row_item_ico">
-                <img src="img/s3_1.png" alt="icon"/>
-              </div>
-              <div className="s3_row_item_right">
-                <div className="s3_row_item_title">Работаем с 2008 года</div>
-                <div className="s3_row_item_desc">
-                  SPA входят в ТОП 10 СПА салонов по независимому рейтингу Москвы
-                </div>
-              </div>
-            </div>
-            <div className="s3_row_item">
-              <div className="s3_row_item_ico">
-                <img src="img/s3_2.png" alt="icon"/>
-              </div>
-              <div className="s3_row_item_right">
-                <div className="s3_row_item_title">Приватная зона отдыха</div>
-                <div className="s3_row_item_desc">
-                  Приватная зона отдыха, где Вы будете отдыхать индивидуально
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="s3_gallery">
-            <a
-              href="img/sl3_1.jpg"
-              className="s3_gallery_item"
-              data-fancybox="gallery"
-            >
-              <div className="screen_img">
-                <img
-                  src="img/sl3_1.jpg"
-                  alt="Спа-массаж тела и лица в Адлере"
+                <input
+                  className="live_search"
+                  type="text"
+                  name="search"
+                  id="live_search"
+                  placeholder="Поиск"
                 />
               </div>
-            </a>
-            <a
-              href="img/sl3_2.jpg"
-              className="s3_gallery_item"
-              data-fancybox="gallery"
-            >
-              <div className="screen_img">
-                <img src="img/sl3_2.jpg" alt="Спа-массаж цены Адлера"/>
-              </div>
-            </a>
-            <a
-              href="img/sl3_3.jpg"
-              className="s3_gallery_item"
-              data-fancybox="gallery"
-            >
-              <div className="screen_img">
-                <img
-                  src="img/sl3_3.jpg"
-                  alt="Спа-массаж для женщин в Адлере"
-                />
-              </div>
-            </a>
-            <a
-              href="img/sl3_4.jpg"
-              className="s3_gallery_item"
-              data-fancybox="gallery"
-            >
-              <div className="screen_img">
-                <img src="img/sl3_4.jpg" alt="Массаж в Спа салоне Адлера"/>
-              </div>
-            </a>
+            </div>
+            <div className="header_contact">
+              <a href="tel:89965091011">8 (996) 509-10-11</a>
+              <p>Работаем с 10:00 до 22:00</p>
+            </div>
+            <div className={`burger ${sidebar ? 'burger_active' : ''}`}
+                 onClick={() => setSidebar(prevState => !prevState)}>
+              <div className="burger_icon"></div>
+            </div>
           </div>
-          <div className="s3_row">
-            <div className="s3_row_item">
-              <div className="s3_row_item_ico">
-                <img src="img/s3_1.png" alt="icon"/>
-              </div>
-              <div className="s3_row_item_right">
-                <div className="s3_row_item_title">Дипломированные специалисты</div>
-                <div className="s3_row_item_desc">
-                  Специалисты с медицинским образованием, опыт работы в спа-отелях
-                  мирового уровня
+          <div className={`header_search_menu ${search ? "active" : ""}`}>
+            <div className="search_menu_filters">
+              <div className="procedure_duration procedure">
+                <h2 className="filter_title">Длительность процедуры:</h2>
+                <div className="procedure_duration_checkbox">
+                  <input
+                    className="custom_checkbox"
+                    type="checkbox"
+                    name="filter_duration"
+                    id="fldur1"
+                    data-duration="duration-1"
+                  />
+                  <label htmlFor="fldur1">1 час</label>
+                </div>
+                <div className="procedure_duration_checkbox">
+                  <input
+                    className="custom_checkbox"
+                    type="checkbox"
+                    name="filter_duration"
+                    id="fldur2"
+                    data-duration="duration-1:30"
+                  />
+                  <label htmlFor="fldur2">1 час 30 минут</label>
+                </div>
+                <div className="procedure_duration_checkbox">
+                  <input
+                    className="custom_checkbox"
+                    type="checkbox"
+                    name="filter_duration"
+                    id="fldur3"
+                    data-duration="duration-2"
+                  />
+                  <label htmlFor="fldur3">2 часа</label>
+                </div>
+                <div className="procedure_duration_checkbox">
+                  <input
+                    className="custom_checkbox"
+                    type="checkbox"
+                    name="filter_duration"
+                    id="fldur4"
+                    data-duration="duration-3"
+                  />
+                  <label htmlFor="fldur4">3 часа</label>
                 </div>
               </div>
-            </div>
-            <div className="s3_row_item">
-              <div className="s3_row_item_ico">
-                <img src="img/s3_2.png" alt="icon"/>
-              </div>
-              <div className="s3_row_item_right">
-                <div className="s3_row_item_title">Косметика класса де люкс</div>
-                <div className="s3_row_item_desc">
-                  Используем косметику высочайшего класса La Sultane de Saba,
-                  Thalasso Bretagne, Davines
+              <div className="procedure_kind procedure">
+                <h2 className="filter_title">Вид услуги</h2>
+                <div className="procedure_kind_radio">
+                  <input
+                    className="custom_radio custom_radio_kind"
+                    type="radio"
+                    name="filter_kind"
+                    id="flkind1"
+                    data-kind="massage"
+                  />
+                  <label htmlFor="flkind1">Массаж</label>
+                </div>
+                <div className="procedure_for_whom_radio">
+                  <input
+                    className="custom_radio custom_radio_kind"
+                    type="radio"
+                    name="filter_kind"
+                    id="flkind2"
+                    data-kind="spa"
+                  />
+                  <label htmlFor="flkind2">Спа</label>
                 </div>
               </div>
-            </div>
-          </div>
-          <div className="s3_gallery">
-            <a
-              href="img/sl3_5.jpg"
-              className="s3_gallery_item"
-              data-fancybox="gallery"
-            >
-              <div className="screen_img">
-                <img src="img/sl3_5.jpg" alt="Массаж в спа салоне Адлера"/>
+              <div className="procedure_for_whom procedure">
+                <h2 className="filter_title">Для кого:</h2>
+                <div className="procedure_for_whom_radio">
+                  <input
+                    className="custom_radio"
+                    type="radio"
+                    name="filter_for_whom"
+                    id="flwhom1"
+                    data-for_whom="women"
+                  />
+                  <label htmlFor="flwhom1">Для женщины</label>
+                </div>
+                <div className="procedure_for_whom_radio">
+                  <input
+                    className="custom_radio"
+                    type="radio"
+                    name="filter_for_whom"
+                    id="flwhom2"
+                    data-for_whom="men"
+                  />
+                  <label htmlFor="flwhom2">Для мужчины</label>
+                </div>
+                <div className="procedure_for_whom_radio">
+                  <input
+                    className="custom_radio"
+                    type="radio"
+                    name="filter_for_whom"
+                    id="flwhom3"
+                    data-for_whom="both"
+                  />
+                  <label htmlFor="flwhom3">Для двоих</label>
+                </div>
               </div>
-            </a>
-            <a
-              href="img/sl3_6.jpg"
-              className="s3_gallery_item"
-              data-fancybox="gallery"
-            >
-              <div className="screen_img">
-                <img src="img/sl3_6.jpg" alt="спа массаж цена в Адлере"/>
+              <div className="procedure_price procedure">
+                <h2 className="filter_title">Цена:</h2>
+                <div className="filter_price_from_to">
+                  <input
+                    className="filter_price_from"
+                    type="number"
+                    name="filter_price_from"
+                    id="flpricefrom"
+                    placeholder="От"
+                  />
+                  <input
+                    className="filter_price_to"
+                    type="number"
+                    name="filter_price_to"
+                    id="flpriceto"
+                    placeholder="До"
+                  />
+                </div>
               </div>
-            </a>
-            <a
-              href="img/sl3_7.jpg"
-              className="s3_gallery_item"
-              data-fancybox="gallery"
-            >
-              <div className="screen_img">
-                <img
-                  src="img/sl3_7.jpg"
-                  alt="спа-массаж для женщины в Адлере"
-                />
-              </div>
-            </a>
-            <a
-              href="img/sl3_8.jpg"
-              className="s3_gallery_item"
-              data-fancybox="gallery"
-            >
-              <div className="screen_img">
-                <img
-                  src="img/sl3_8.jpg"
-                  alt="спа-массаж для мужчины в Адлере"
-                />
-              </div>
-            </a>
-          </div>
-        </div>
-      </div>
-      <div className="s4" id="s4">
-        <div className="s1_bg_line_top">
-          <img src="img/line.png" alt="line"/>
-          <img src="img/line.png" alt="line"/>
-        </div>
-        <div className="s1_bg_line">
-          <img src="img/line.png" alt="line"/>
-          <img src="img/line.png" alt="line"/>
-        </div>
-        <div className="wrapper">
-          <div className="s4_content">
-            <div className="seashell_img">
-              <img
-                src="img/rakushka.png"
-                alt="Массаж в спа салоне для женщины в Адлере"
-              />
+              <button type="button" className="submit_filters btn">Применить</button>
+              <button type="button" className="remove_filters product_more">
+                Очистить
+              </button>
             </div>
-            <div className="s2_rose">
-              <img src="img/rose2.png" alt="Спа массаж девушке в Адлере"/>
-            </div>
-            <h2>Массаж и спа для женщины</h2>
-            <div className="subtitle">
-              Мы составили 9 разнообразных программ и массаж на выбор для
-              женщины,<br/>
-              которые удовлетворят любой изысканный вкус
-            </div>
-            <div className="products">
-              <div className="product card">
+            <div type="button" className="search_close_btn" onClick={() => setSearch(false)}></div>
+            <div className="search_menu_products">
+              <div className="product card duration-1 women massage">
                 <div className="product_img">
                   <div className="screen_img">
                     <img
@@ -301,6 +208,7 @@ export default function Page() {
                 <div className="popup popup_product">
                   <div className="close1"></div>
                   <div className="popup-block">
+                    1
                     <div className="close2">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -362,7 +270,7 @@ export default function Page() {
                   </div>
                 </div>
               </div>
-              <div className="product card">
+              <div className="product card duration-1:30 women spa">
                 <div className="product_img">
                   <div className="screen_img">
                     <img
@@ -456,7 +364,7 @@ export default function Page() {
                   </div>
                 </div>
               </div>
-              <div className="product card">
+              <div className="product card duration-2 women spa">
                 <div className="product_img">
                   <div className="screen_img">
                     <img
@@ -555,7 +463,7 @@ export default function Page() {
                   </div>
                 </div>
               </div>
-              <div className="product card">
+              <div className="product card duration-2 women spa">
                 <div className="product_img">
                   <div className="screen_img">
                     <img
@@ -650,7 +558,7 @@ export default function Page() {
                   </div>
                 </div>
               </div>
-              <div className="product card">
+              <div className="product card duration-2 women spa">
                 <div className="product_img">
                   <div className="screen_img">
                     <img
@@ -745,7 +653,7 @@ export default function Page() {
                   </div>
                 </div>
               </div>
-              <div className="product card">
+              <div className="product card duration-1:30 women spa">
                 <div className="product_img">
                   <div className="screen_img">
                     <img
@@ -836,7 +744,7 @@ export default function Page() {
                   </div>
                 </div>
               </div>
-              <div className="product card">
+              <div className="product card duration-1:30 women spa">
                 <div className="product_img">
                   <div className="screen_img">
                     <img
@@ -921,7 +829,7 @@ export default function Page() {
                   </div>
                 </div>
               </div>
-              <div className="product card">
+              <div className="product card duration-2 women spa">
                 <div className="product_img">
                   <div className="screen_img">
                     <img
@@ -1010,7 +918,7 @@ export default function Page() {
                   </div>
                 </div>
               </div>
-              <div className="product card">
+              <div className="product card duration-3 women spa">
                 <div className="product_img">
                   <div className="screen_img">
                     <img
@@ -1098,7 +1006,7 @@ export default function Page() {
                   </div>
                 </div>
               </div>
-              <div className="product card">
+              <div className="product card duration-3 women spa">
                 <div className="product_img">
                   <div className="screen_img">
                     <img
@@ -1183,21 +1091,7 @@ export default function Page() {
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="s5" id="s5">
-        <div className="wrapper">
-          <div className="s4_content">
-            <h2>Массаж и спа для мужчины</h2>
-            <div className="subtitle">
-              Мы составили 4 разнообразные программы и массаж на выбор для
-              мужчины,<br/>
-              которые удовлетворят любой изысканный вкус
-            </div>
-            <div className="products">
-              <div className="product card">
+              <div className="product card duration-1 men massage">
                 <div className="product_img">
                   <div className="screen_img">
                     <img
@@ -1284,7 +1178,7 @@ export default function Page() {
                   </div>
                 </div>
               </div>
-              <div className="product card">
+              <div className="product card duration-2 men spa">
                 <div className="product_img">
                   <div className="screen_img">
                     <img
@@ -1369,7 +1263,7 @@ export default function Page() {
                   </div>
                 </div>
               </div>
-              <div className="product card">
+              <div className="product card duration-1:30 men spa">
                 <div className="product_img">
                   <div className="screen_img">
                     <img
@@ -1457,7 +1351,7 @@ export default function Page() {
                   </div>
                 </div>
               </div>
-              <div className="product card">
+              <div className="product card duration-1:30 men spa">
                 <div className="product_img">
                   <div className="screen_img">
                     <img
@@ -1539,31 +1433,7 @@ export default function Page() {
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="s6" id="s6">
-        <div className="s1_bg_line_top">
-          <img src="img/line.png" alt="line"/>
-          <img src="img/line.png" alt="line"/>
-        </div>
-        <div className="wrapper">
-          <div className="s4_content">
-            <div className="seashell_img">
-              <img
-                src="img/cup3.png"
-                alt="Массаж и спа процедуры для двоих в салоне Адлера"
-              />
-            </div>
-            <h2>Массаж и спа для двоих</h2>
-            <div className="subtitle">
-              Мы составили 3 разнообразные программы и массаж для двоих на
-              выбор,<br/>
-              которые удовлетворят любой изысканный вкус
-            </div>
-            <div className="products">
-              <div className="product card">
+              <div className="product card duration-1 both massage">
                 <div className="product_img">
                   <div className="screen_img">
                     <img
@@ -1652,7 +1522,7 @@ export default function Page() {
                   </div>
                 </div>
               </div>
-              <div className="product card">
+              <div className="product card duration-2 both spa">
                 <div className="product_img">
                   <div className="screen_img">
                     <img
@@ -1746,7 +1616,7 @@ export default function Page() {
                   </div>
                 </div>
               </div>
-              <div className="product card">
+              <div className="product card duration-2 both spa">
                 <div className="product_img">
                   <div className="screen_img">
                     <img
@@ -1835,7 +1705,7 @@ export default function Page() {
                   </div>
                 </div>
               </div>
-              <div className="product card">
+              <div className="product card duration-3 both spa">
                 <div className="product_img">
                   <div className="screen_img">
                     <img
@@ -1933,369 +1803,165 @@ export default function Page() {
               </div>
             </div>
           </div>
-        </div>
-      </div>
-      <div className="s7" id="s7">
-        <div className="wrapper">
-          <h2>Отзывы об услуге</h2>
-          <div className="s7_slider">
-            <div className="s7_slider_item">
-              <div className="s7_slider_item_block">
-                <div className="s7_slider_item_block_title">
-                  Ксения <span>04.01.2025</span>
-                </div>
-                <div className="s7_slider_item_block_desc">
-                  <div className="s7_slider_item_rating">
-                    <div className="s7_slider_item_star">
-                      <img src="img/star.svg" alt="star"/>
-                      <img src="img/star.svg" alt="star"/>
-                      <img src="img/star.svg" alt="star"/>
-                      <img src="img/star.svg" alt="star"/>
-                      <img src="img/star.svg" alt="star"/>
-                    </div>
-                    <div className="s7_slider_item_rating_desc">отлично</div>
-                  </div>
-                </div>
+          <div className="search_menu_filters mobile">
+            <div type="button" className="filters_close_btn"></div>
+            <div className="procedure_duration procedure">
+              <h2 className="filter_title">Длительность процедуры:</h2>
+              <div className="procedure_duration_checkbox">
+                <input
+                  className="custom_checkbox"
+                  type="checkbox"
+                  name="filter_duration"
+                  id="fldur1mob"
+                  data-duration="duration-1"
+                />
+                <label htmlFor="fldur1mob">1 час</label>
               </div>
-              <div className="s7_slider_item_block">
-                <div className="s7_slider_item_block_title">Достоинства:</div>
-                <div className="s7_slider_item_block_desc">Массаж расслабляет</div>
+              <div className="procedure_duration_checkbox">
+                <input
+                  className="custom_checkbox"
+                  type="checkbox"
+                  name="filter_duration"
+                  id="fldur2mob"
+                  data-duration="duration-1:30"
+                />
+                <label htmlFor="fldur2mob">1 час 30 минут</label>
               </div>
-              <div className="s7_slider_item_block">
-                <div className="s7_slider_item_block_title">Недостатки:</div>
-                <div className="s7_slider_item_block_desc">Хочется еще</div>
+              <div className="procedure_duration_checkbox">
+                <input
+                  className="custom_checkbox"
+                  type="checkbox"
+                  name="filter_duration"
+                  id="fldur3mob"
+                  data-duration="duration-2"
+                />
+                <label htmlFor="fldur3mob">2 часа</label>
               </div>
-              <div className="s7_slider_item_block">
-                <div className="s7_slider_item_block_title">Комментарий:</div>
-                <div className="s7_slider_item_block_desc">
-                  Решила первый раз пойти на масляный массаж. Зря не попробовала
-                  это чудо раньше( это как классический общий на все тело только
-                  нааамного приятнее. Во время сеанса ощущаешь себя практически
-                  невесомо. Даже гипертонусные мышцы прорабатываются так что не
-                  больно. А после процедуры остается чувство расслабления и
-                  облегчения, как после хорошего отдыха.
-                </div>
-              </div>
-              <div className="s7_slider_item_block">
-                <div className="s7_slider_item_block_title">
-                  Ответ администратора 04.01.2025
-                </div>
-                <div className="s7_slider_item_block_desc">Спасибо за Ваш отзыв</div>
+              <div className="procedure_duration_checkbox">
+                <input
+                  className="custom_checkbox"
+                  type="checkbox"
+                  name="filter_duration"
+                  id="fldur4mob"
+                  data-duration="duration-3"
+                />
+                <label htmlFor="fldur4mob">3 часа</label>
               </div>
             </div>
-            <div className="s7_slider_item">
-              <div className="s7_slider_item_block">
-                <div className="s7_slider_item_block_title">
-                  Анна <span>02.01.2025</span>
-                </div>
-                <div className="s7_slider_item_block_desc">
-                  <div className="s7_slider_item_rating">
-                    <div className="s7_slider_item_star">
-                      <img src="img/star.svg" alt="star"/>
-                      <img src="img/star.svg" alt="star"/>
-                      <img src="img/star.svg" alt="star"/>
-                      <img src="img/star.svg" alt="star"/>
-                      <img src="img/star.svg" alt="star"/>
-                    </div>
-                    <div className="s7_slider_item_rating_desc">отлично</div>
-                  </div>
-                </div>
+            <div className="procedure_kind procedure">
+              <h2 className="filter_title">Вид услуги</h2>
+              <div className="procedure_kind_radio">
+                <input
+                  className="custom_radio custom_radio_kind"
+                  type="radio"
+                  name="filter_kind"
+                  id="flkind1mob"
+                  data-kind="massage"
+                />
+                <label htmlFor="flkind1mob">Массаж</label>
               </div>
-              <div className="s7_slider_item_block">
-                <div className="s7_slider_item_block_title">Достоинства:</div>
-                <div className="s7_slider_item_block_desc">Эффективно</div>
-              </div>
-              <div className="s7_slider_item_block">
-                <div className="s7_slider_item_block_title">Недостатки:</div>
-                <div className="s7_slider_item_block_desc">нет</div>
-              </div>
-              <div className="s7_slider_item_block">
-                <div className="s7_slider_item_block_title">Комментарий:</div>
-                <div className="s7_slider_item_block_desc">
-                  Хожу на оил-массаж как минимум раз в месяц. Очень крутая
-                  процедура! Она и для расслабления мышц, и для кровообращения, и
-                  для улучшения состояния кожи идеально подходит. Если хотите
-                  попробовать массаж на все тело, то советую именно такой. Правда
-                  часа будет маловато, так что берите на 1,5 или 2, чтоб уж точно
-                  получить чистый кайф и отключиться от всего.
-                </div>
-              </div>
-              <div className="s7_slider_item_block">
-                <div className="s7_slider_item_block_title">
-                  Ответ администратора 02.01.2025
-                </div>
-                <div className="s7_slider_item_block_desc">Спасибо за Ваш отзыв</div>
+              <div className="procedure_for_whom_radio">
+                <input
+                  className="custom_radio custom_radio_kind"
+                  type="radio"
+                  name="filter_kind"
+                  id="flkind2mob"
+                  data-kind="spa"
+                />
+                <label htmlFor="flkind2mob">Спа</label>
               </div>
             </div>
-            <div className="s7_slider_item">
-              <div className="s7_slider_item_block">
-                <div className="s7_slider_item_block_title">
-                  Лиза <span>01.07.2024</span>
-                </div>
-                <div className="s7_slider_item_block_desc">
-                  <div className="s7_slider_item_rating">
-                    <div className="s7_slider_item_star">
-                      <img src="img/star.svg" alt="star"/>
-                      <img src="img/star.svg" alt="star"/>
-                      <img src="img/star.svg" alt="star"/>
-                      <img src="img/star.svg" alt="star"/>
-                      <img src="img/star.svg" alt="star"/>
-                    </div>
-                    <div className="s7_slider_item_rating_desc">отлично</div>
-                  </div>
-                </div>
+            <div className="procedure_for_whom procedure">
+              <h2 className="filter_title">Для кого:</h2>
+              <div className="procedure_for_whom_radio">
+                <input
+                  className="custom_radio"
+                  type="radio"
+                  name="filter_for_whom"
+                  id="flwhom1mob"
+                  data-for_whom="women"
+                />
+                <label htmlFor="flwhom1mob">Для женщины</label>
               </div>
-              <div className="s7_slider_item_block">
-                <div className="s7_slider_item_block_title">Достоинства:</div>
-                <div className="s7_slider_item_block_desc">Персонал</div>
+              <div className="procedure_for_whom_radio">
+                <input
+                  className="custom_radio"
+                  type="radio"
+                  name="filter_for_whom"
+                  id="flwhom2mob"
+                  data-for_whom="men"
+                />
+                <label htmlFor="flwhom2mob">Для мужчины</label>
               </div>
-              <div className="s7_slider_item_block">
-                <div className="s7_slider_item_block_title">Недостатки:</div>
-                <div className="s7_slider_item_block_desc">-</div>
-              </div>
-              <div className="s7_slider_item_block">
-                <div className="s7_slider_item_block_title">Комментарий:</div>
-                <div className="s7_slider_item_block_desc">
-                  Персонал супер, атмосфера в салоне супер, после массажа будто
-                  перерождаешься! Я взяла полуторачасовой сеанс и кайфовала на
-                  протяжении всей процедуры. Массажистка проработала буквально
-                  каждую зону тела и поставила меня на ноги после адской рабочей
-                  недели. Ушла головная боль, напряжение в плечах и шее, которое
-                  не убиралось разминкой и зарядкой.
-                </div>
-              </div>
-              <div className="s7_slider_item_block">
-                <div className="s7_slider_item_block_title">
-                  Ответ администратора 02.01.2025
-                </div>
-                <div className="s7_slider_item_block_desc">Спасибо за Ваш отзыв</div>
+              <div className="procedure_for_whom_radio">
+                <input
+                  className="custom_radio"
+                  type="radio"
+                  name="filter_for_whom"
+                  id="flwhom3mob"
+                  data-for_whom="both"
+                />
+                <label htmlFor="flwhom3mob">Для двоих</label>
               </div>
             </div>
-            <div className="s7_slider_item">
-              <div className="s7_slider_item_block">
-                <div className="s7_slider_item_block_title">
-                  Елена <span>02.01.2025</span>
-                </div>
-                <div className="s7_slider_item_block_desc">
-                  <div className="s7_slider_item_rating">
-                    <div className="s7_slider_item_star">
-                      <img src="img/star.svg" alt="star"/>
-                      <img src="img/star.svg" alt="star"/>
-                      <img src="img/star.svg" alt="star"/>
-                      <img src="img/star.svg" alt="star"/>
-                      <img src="img/star.svg" alt="star"/>
-                    </div>
-                    <div className="s7_slider_item_rating_desc">отлично</div>
-                  </div>
-                </div>
-              </div>
-              <div className="s7_slider_item_block">
-                <div className="s7_slider_item_block_title">Достоинства:</div>
-                <div className="s7_slider_item_block_desc">Кайф!</div>
-              </div>
-              <div className="s7_slider_item_block">
-                <div className="s7_slider_item_block_title">Недостатки:</div>
-                <div className="s7_slider_item_block_desc">- - - -</div>
-              </div>
-              <div className="s7_slider_item_block">
-                <div className="s7_slider_item_block_title">Комментарий:</div>
-                <div className="s7_slider_item_block_desc">
-                  Крутейший тайский массаж с маслами! Я просто расплылась по
-                  кушетке от удовольствия и расслабления. Хочу еще!)))
-                </div>
-              </div>
-              <div className="s7_slider_item_block">
-                <div className="s7_slider_item_block_title">
-                  Ответ администратора 02.01.2025
-                </div>
-                <div className="s7_slider_item_block_desc">Спасибо за Ваш отзыв</div>
+            <div className="procedure_price procedure">
+              <h2 className="filter_title">Цена:</h2>
+              <div className="filter_price_from_to">
+                <input
+                  className="filter_price_from mobile"
+                  type="number"
+                  name="filter_price_from"
+                  id="flpricefrommob"
+                  placeholder="От"
+                />
+                <input
+                  className="filter_price_to mobile"
+                  type="number"
+                  name="filter_price_to"
+                  id="flpricetomob"
+                  placeholder="До"
+                />
               </div>
             </div>
-            <div className="s7_slider_item">
-              <div className="s7_slider_item_block">
-                <div className="s7_slider_item_block_title">
-                  Анатолий <span>10.05.2024</span>
-                </div>
-                <div className="s7_slider_item_block_desc">
-                  <div className="s7_slider_item_rating">
-                    <div className="s7_slider_item_star">
-                      <img src="img/star.svg" alt="star"/>
-                      <img src="img/star.svg" alt="star"/>
-                      <img src="img/star.svg" alt="star"/>
-                      <img src="img/star.svg" alt="star"/>
-                      <img src="img/star.svg" alt="star"/>
-                    </div>
-                    <div className="s7_slider_item_rating_desc">отлично</div>
-                  </div>
-                </div>
-              </div>
-              <div className="s7_slider_item_block">
-                <div className="s7_slider_item_block_title">Достоинства:</div>
-                <div className="s7_slider_item_block_desc">
-                  Все очень понравилось, мастера просто класс!!!
-                </div>
-              </div>
-              <div className="s7_slider_item_block">
-                <div className="s7_slider_item_block_title">Недостатки:</div>
-                <div className="s7_slider_item_block_desc">Нет</div>
-              </div>
-              <div className="s7_slider_item_block">
-                <div className="s7_slider_item_block_title">Комментарий:</div>
-                <div className="s7_slider_item_block_desc">
-                  Спасибо за сервис и прекрасное настроение!
-                </div>
-              </div>
-            </div>
-            <div className="s7_slider_item">
-              <div className="s7_slider_item_block">
-                <div className="s7_slider_item_block_title">
-                  Вадим <span>31.12.2024</span>
-                </div>
-                <div className="s7_slider_item_block_desc">
-                  <div className="s7_slider_item_rating">
-                    <div className="s7_slider_item_star">
-                      <img src="img/star.svg" alt="star"/>
-                      <img src="img/star.svg" alt="star"/>
-                      <img src="img/star.svg" alt="star"/>
-                      <img src="img/star.svg" alt="star"/>
-                      <img src="img/star.svg" alt="star"/>
-                    </div>
-                    <div className="s7_slider_item_rating_desc">отлично</div>
-                  </div>
-                </div>
-              </div>
-              <div className="s7_slider_item_block">
-                <div className="s7_slider_item_block_title">Достоинства:</div>
-                <div className="s7_slider_item_block_desc">Хороший массаж</div>
-              </div>
-              <div className="s7_slider_item_block">
-                <div className="s7_slider_item_block_title">Недостатки:</div>
-                <div className="s7_slider_item_block_desc">Нет</div>
-              </div>
-              <div className="s7_slider_item_block">
-                <div className="s7_slider_item_block_title">Комментарий:</div>
-                <div className="s7_slider_item_block_desc">
-                  Мне нравится, что после массажа пропадают боли в спине и
-                  выпрямляется осанка.
-                </div>
-              </div>
-            </div>
+            <button type="button" className="submit_filters mobile btn">
+              Применить
+            </button>
+            <button type="button" className="remove_filters mobile product_more">
+              Очистить
+            </button>
           </div>
         </div>
-      </div>
-      <div className="s8" id="s8">
-        <div className="wrapper">
-          <div className="s8_items">
-            <div className="s8_left">
-              <h3>Мы находимся здесь</h3>
-              <a href="tel:+79965091011">✆ 8(996)509-10-11</a>
-              <p><strong>Адлер</strong> ул.Кирпичная,24/2</p>
-              <div className="social">
-                <a href="https://wa.me/+79965091011" target="_blank">
-                  <svg
-                    width="30px"
-                    height="30px"
-                    fill="currentColor"
-                    className="bi bi-whatsapp"
-                    viewBox="0 0 16 16"
-                  >
-                    <path
-                      d="M4.5 0C2.019 0 0 2.019 0 4.5v7c0 2.481 2.019 4.5 4.5 4.5h7c2.481 0 4.5-2.019 4.5-4.5V4.5c0-2.481-2.019-4.5-4.5-4.5H4.5zm2.25 1.125h2.25c.138 0 .25.112.25.25v.75c0 .138-.112.25-.25.25h-2.25c-.138 0-.25-.112-.25-.25v-.75c0-.138.112-.25.25-.25zm-1.125.563c-.138 0-.25.112-.25.25v1.5c0 .138.112.25.25.25h.563c.138 0 .25-.112.25-.25v-.563c0-.138-.112-.25-.25-.25h-.313v-.5h.313zm3.563.5c.69 0 1.25.56 1.25 1.25v.75c0 .138-.112.25-.25.25h-.563c-.138 0-.25-.112-.25-.25v-.563c0-.138-.112-.25-.25-.25h-.313v-.5h.626zm-3.563 1.5h.313c.138 0 .25.112.25.25v1.5c0 .138-.112.25-.25.25h-.313v.5h-.563v-.5h-.313c-.138 0-.25-.112-.25-.25v-1.5c0-.138.112-.25.25-.25h.313v-.5h.563v.5zm3.563 1.5c.138 0 .25.112.25.25v.563c0 .138-.112.25-.25.25h-.563c-.138 0-.25-.112-.25-.25v-.563c0-.138.112-.25.25-.25h.563zm-1.125.563c0 .138-.112.25-.25.25h-.313v.5h-.563v-.5h-.313c-.138 0-.25-.112-.25-.25v-1.5c0-.138.112-.25.25-.25h.313v.5h.563v-.5h.313c.138 0 .25.112.25.25v1.5z"
-                    />
-                  </svg>
-                </a>
-                <a href="https://t.me/alex_estetica" target="_blank">
-                  <svg
-                    className="t-sociallinks__svg"
-                    version="1.1"
-                    width="30px"
-                    height="30px"
-                    viewBox="0 0 60 60"
-                  >
-                    <desc>Telegram</desc>
-                    <path
-                      d="M30 0C13.4 0 0 13.4 0 30s13.4 30 30 30 30-13.4 30-30S46.6 0 30 0zm16.9 13.9l-6.7 31.5c-.1.6-.8.9-1.4.6l-10.3-6.9-5.5 5.2c-.5.4-1.2.2-1.4-.4L18 32.7l-9.5-3.9c-.7-.3-.7-1.5 0-1.8l37.1-14.1c.7-.2 1.4.3 1.3 1z"
-                    ></path>
-                    <path
-                      d="M22.7 40.6l.6-5.8 16.8-16.3-20.2 13.3"
-                    ></path>
-                  </svg>
-                </a>
-              </div>
-            </div>
-            <div className="s8_right">
-              <div className="map">
-                <iframe
-                  src="https://yandex.com/map-widget/v1/?um=constructor%3A738dcd11e0e28648c986f271179e1b24a18dc7b6a0991addb935792de5815a69&amp;source=constructor"
-                  width="888" height="660" frameBorder="0"></iframe>
-              </div>
-            </div>
-          </div>
+      </header>
+      <div className={`mob_menu btn_to ${sidebar ? 'mob_menu_open' : ''}`}>
+        <div id="menu_mob" className="fix_menu">
+          <ul>
+            <li>
+              <a href="#s4">Массаж для женщины</a>
+            </li>
+            <li>
+              <a href="#s5">Массаж для мужчины</a>
+            </li>
+            <li>
+              <a href="#s6">Массаж для двоих</a>
+            </li>
+            <li>
+              <Link href="/kursy-kosmetologa">Обучение косметологии</Link>
+            </li>
+            <li>
+              <Link href="/kursy-massage">Обучение массажу</Link>
+            </li>
+            <li>
+              <a href="#s8">Наш адрес в Адлере</a>
+            </li>
+            <li>
+              <a href="tel:+79965091011">Позвонить</a>
+            </li>
+            <li>
+              <a href="#s7">Отзывы</a>
+            </li>
+          </ul>
         </div>
       </div>
-      <div className="to_cart" onClick={()=> setPopup(true)} >
-        <svg
-          enableBackground="new 0 0 40 40"
-          id="Слой_1"
-          version="1.1"
-          viewBox="0 0 40 40"
-        >
-          <g>
-            <path
-              d="M38.9,11.9c-0.8-0.9-1.9-1.5-3.1-1.5H20.4c-0.5,0-1,0.4-1,1c0,0.6,0.5,1,1,1h15.4c0.6,0,1.2,0.3,1.6,0.7   c0.4,0.5,0.6,1.1,0.4,1.7l-0.9,5h-11c-0.5,0-1,0.4-1,1s0.5,1,1,1h10.7l-0.9,4.8c-0.1,0.7-0.8,1.2-1.5,1.2H15   c-0.7,0-1.3-0.5-1.5-1.2L9.6,4.9c-0.1-0.5-0.5-0.8-1-0.8H0.9c-0.5,0-1,0.4-1,1s0.5,1,1,1h6.9l3.8,21c0.2,1.4,1.2,2.4,2.5,2.8   c-0.5,0.7-0.9,1.6-0.9,2.6c0,2.5,2,4.5,4.5,4.5c2.5,0,4.5-2,4.5-4.5c0-0.9-0.3-1.8-0.8-2.5h6.1c-0.5,0.7-0.8,1.6-0.8,2.5   c0,2.5,2,4.5,4.5,4.5c2.5,0,4.5-2,4.5-4.5c0-1-0.3-1.9-0.8-2.6c1.3-0.3,2.4-1.4,2.7-2.8l2.2-11.8C40,14.1,39.7,12.9,38.9,11.9z    M20.2,32.4c0,1.4-1.1,2.5-2.5,2.5s-2.5-1.1-2.5-2.5c0-1.4,1.1-2.5,2.5-2.5S20.2,31,20.2,32.4z M31.3,34.9c-1.4,0-2.5-1.1-2.5-2.5   c0-1.4,1.1-2.5,2.5-2.5c1.4,0,2.5,1.1,2.5,2.5C33.8,33.8,32.7,34.9,31.3,34.9z"
-            />
-          </g>
-        </svg>
-      </div>
-      <div className={`popup popup_card ${popup ? 'active' : ''}`}>
-        <div className="close1" onClick={()=> setPopup(false)}></div>
-        <div className="popup-block" >
-          <div className="close2"  onClick={()=> setPopup(false)}>
-            <svg
-              width="13"
-              height="13"
-              viewBox="0 0 13 13"
-              fill="none"
-            >
-              <path
-                d="M12.5956 10.6452C13.1348 11.1847 13.1348 12.0564 12.5956 12.5958C12.4676 12.7241 12.3156 12.8258 12.1482 12.8952C11.9808 12.9645 11.8013 13.0001 11.6201 12.9999C11.2671 12.9999 10.914 12.8648 10.645 12.5958L6.50003 8.45055L2.35511 12.5959C2.22718 12.7241 2.07517 12.8259 1.9078 12.8952C1.74044 12.9646 1.56103 13.0002 1.37987 13C1.19869 13.0002 1.01926 12.9646 0.851875 12.8952C0.684492 12.8259 0.532458 12.7242 0.404503 12.5959C-0.134747 12.0564 -0.134747 11.1847 0.404503 10.6452L4.54968 6.50016L0.404438 2.35516C-0.134813 1.81564 -0.134813 0.943965 0.404438 0.404511C0.943946 -0.13475 1.8156 -0.13475 2.35511 0.404511L6.50003 4.54977L10.645 0.404446C11.1845 -0.134815 12.0561 -0.134815 12.5956 0.404446C13.1348 0.943965 13.1348 1.81564 12.5956 2.35516L8.45039 6.50016L12.5956 10.6452Z"
-                fill="white"
-              />
-            </svg>
-          </div>
-          <form>
-            <div className="cart">
-              <div className="total_price_wrapper">
-                <h2 className="total_price_title">Итого:</h2>
-                <p className="all_total_price"></p>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-      <div className="popup popup_last">
-        <div className="close1"></div>
-        <div className="popup-block">
-          <div className="close2">
-            <svg
-              width="13"
-              height="13"
-              viewBox="0 0 13 13"
-              fill="none"
-            >
-              <path
-                d="M12.5956 10.6452C13.1348 11.1847 13.1348 12.0564 12.5956 12.5958C12.4676 12.7241 12.3156 12.8258 12.1482 12.8952C11.9808 12.9645 11.8013 13.0001 11.6201 12.9999C11.2671 12.9999 10.914 12.8648 10.645 12.5958L6.50003 8.45055L2.35511 12.5959C2.22718 12.7241 2.07517 12.8259 1.9078 12.8952C1.74044 12.9646 1.56103 13.0002 1.37987 13C1.19869 13.0002 1.01926 12.9646 0.851875 12.8952C0.684492 12.8259 0.532458 12.7242 0.404503 12.5959C-0.134747 12.0564 -0.134747 11.1847 0.404503 10.6452L4.54968 6.50016L0.404438 2.35516C-0.134813 1.81564 -0.134813 0.943965 0.404438 0.404511C0.943946 -0.13475 1.8156 -0.13475 2.35511 0.404511L6.50003 4.54977L10.645 0.404446C11.1845 -0.134815 12.0561 -0.134815 12.5956 0.404446C13.1348 0.943965 13.1348 1.81564 12.5956 2.35516L8.45039 6.50016L12.5956 10.6452Z"
-                fill="white"
-              />
-            </svg>
-          </div>
-          <div className="popup_title">Благодарим за ваш запрос</div>
-          <div className="popup_subtitle">
-            В ближайшее время с вами свяжется наш специалист!
-          </div>
-        </div>
-      </div>
-
-    </div>
-  );
+    </>
+  )
 }
