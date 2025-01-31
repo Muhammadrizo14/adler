@@ -1,5 +1,8 @@
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import "./globals.css";
 import {Montserrat} from 'next/font/google'
+import '@fancyapps/ui/dist/fancybox/fancybox.css';
 
 import {config} from '@fortawesome/fontawesome-svg-core'
 import '@fortawesome/fontawesome-svg-core/styles.css'
@@ -24,6 +27,8 @@ export default function RootLayout({children}) {
       <Header/>
       {children}
       <Footer/>
+
+
     </body>
     </html>
   );
