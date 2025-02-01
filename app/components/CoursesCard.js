@@ -35,14 +35,14 @@ export default function Page({service}) {
               {service.title}
             </div>
             <div className="product_work">
-              Продолжительность:&nbsp;<strong  style={{fontWeight: 700}}
+              Продолжительность:&nbsp;<strong style={{fontWeight: 700}}
             >{service.duration}</strong
-            ><br/><strong  style={{fontWeight: 700}}
+            ><br/><strong style={{fontWeight: 700}}
             >Заочно-дистационно {service.price.distance_learning}{service.currency}</strong
-            ><br/><strong  style={{fontWeight: 700}}
-            >Очно в группе  {service.price.group}{service.currency}</strong
-            ><br/><strong  style={{fontWeight: 700}}
-            >Очно-индивидуально  {service.price.individual}{service.currency}</strong
+            ><br/><strong style={{fontWeight: 700}}
+            >Очно в группе {service.price.group}{service.currency}</strong
+            ><br/><strong style={{fontWeight: 700}}
+            >Очно-индивидуально {service.price.individual}{service.currency}</strong
             >
             </div>
           </div>
@@ -50,13 +50,13 @@ export default function Page({service}) {
             {cart.some(item => item.id === service.id) ? "В корзине" : "Заказать"}
 
           </div>
-          <div className="product_more" onClick={()=> setIsPopupOpen(true)}>Подробнее</div>
+          <div className="product_more" onClick={() => setIsPopupOpen(true)}>Подробнее</div>
         </div>
         {isPopupOpen && (
           <div className="popup popup_product" style={{display: 'block'}}>
-            <div className="close1" onClick={()=> setIsPopupOpen(false)}></div>
+            <div className="close1" onClick={() => setIsPopupOpen(false)}></div>
             <div className="popup-block">
-              <div className="close2" onClick={()=> setIsPopupOpen(false)}>
+              <div className="close2" onClick={() => setIsPopupOpen(false)}>
                 <svg
                   width="13"
                   height="13"
@@ -84,13 +84,13 @@ export default function Page({service}) {
                         {service.title}
                       </div>
                       <div className="product_work">
-                        Продолжительность:&nbsp;<strong  style={{fontWeight: 700}}
+                        Продолжительность:&nbsp;<strong style={{fontWeight: 700}}
                       >{service.duration}</strong
-                      ><br/><strong  style={{fontWeight: 700}}
+                      ><br/><strong style={{fontWeight: 700}}
                       >Заочно-дистационно {service.price.distance_learning}{service.currency}</strong
-                      ><br/><strong  style={{fontWeight: 700}}
+                      ><br/><strong style={{fontWeight: 700}}
                       >Очно в группе {service.price.group}{service.currency}</strong
-                      ><br/><strong  style={{fontWeight: 700}}
+                      ><br/><strong style={{fontWeight: 700}}
                       >Очно-индивидуально {service.price.individual}{service.currency}</strong
                       >
                       </div>
@@ -99,23 +99,23 @@ export default function Page({service}) {
                       {cart.some(item => item.id === service.id) ? "В корзине" : "Заказать"}
                     </div>
                     <div className="product_popup_content content">
-                      <div className="t849__text t-descr t-descr_sm" >
-                        <strong  style={{fontWeight: 700}}
+                      <div className="t849__text t-descr t-descr_sm">
+                        <strong style={{fontWeight: 700}}
                         >Программа курса:</strong
-                        ><br/><strong  style={{fontWeight: 700}}
+                        ><br/><strong style={{fontWeight: 700}}
                       >Теоретическая часть:</strong
                       ><br/>
                         <ul>
-                          {service.theoretical_part.map(item=> (
-                            <li>{item};</li>
+                          {service.theoretical_part.map(item => (
+                            <li key={item}>{item}</li>
                           ))}
                         </ul>
-                        <strong  style={{fontWeight: 700}}
+                        <strong style={{fontWeight: 700}}
                         >Практическая часть:</strong
                         ><br/>
                         <ul>
-                          {service.practical_part.map(item=> (
-                            <li>{item};</li>
+                          {service.practical_part.map(item => (
+                            <li key={item}>{item}</li>
                           ))}
                         </ul>
                       </div>
