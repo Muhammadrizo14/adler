@@ -1,51 +1,154 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
+import CoursesCard from "@/app/components/CoursesCard";
 import Link from "next/link";
 import useProductStore from "../../stores/useProductStore";
 import ServiceCard from "@/app/components/ServiceCard";
+import Breadcrumbs from "@/app/components/Breadcrumb";
 
-export default function Footer() {
+export default function Header() {
   const pathname = usePathname();
   const [search, setSearch] = useState(false);
   const [sidebar, setSidebar] = useState(false);
-  const { service } = useProductStore();
+  const {
+    service,
+    courseOfMassage, // data for /kursy-massage
+    courseOfCosmetics, // data for /kursy-kosmetologa
+  } = useProductStore();
+  const [citySearch, setCitySearch] = useState("");
+  const [citySuggestions, setCitySuggestions] = useState([]);
+  const [showCitySuggestions, setShowCitySuggestions] = useState(false);
+  const [isLoadingCities, setIsLoadingCities] = useState(false);
+  const citySearchRef = useRef(null);
+
+  // Simple transliteration function: Cyrillic to Latin.
+  const transliterate = (text) => {
+    const rusToEngMap = {
+      'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd',
+      'е': 'e', 'ё': 'yo', 'ж': 'zh', 'з': 'z', 'и': 'i',
+      'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n',
+      'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't',
+      'у': 'u', 'ф': 'f', 'х': 'kh', 'ц': 'ts', 'ч': 'ch',
+      'ш': 'sh', 'щ': 'sch', 'ъ': '', 'ы': 'y', 'ь': '',
+      'э': 'e', 'ю': 'yu', 'я': 'ya',
+      'А': 'A', 'Б': 'B', 'В': 'V', 'Г': 'G', 'Д': 'D',
+      'Е': 'E', 'Ё': 'Yo', 'Ж': 'Zh', 'З': 'Z', 'И': 'I',
+      'Й': 'Y', 'К': 'K', 'Л': 'L', 'М': 'M', 'Н': 'N',
+      'О': 'O', 'П': 'P', 'Р': 'R', 'С': 'S', 'Т': 'T',
+      'У': 'U', 'Ф': 'F', 'Х': 'Kh', 'Ц': 'Ts', 'Ч': 'Ch',
+      'Ш': 'Sh', 'Щ': 'Sch', 'Ъ': '', 'Ы': 'Y', 'Ь': '',
+      'Э': 'E', 'Ю': 'Yu', 'Я': 'Ya'
+    };
+    return text
+      .split('')
+      .map((char) => rusToEngMap[char] || char)
+      .join('');
+  };
+
+  // Select data based on pathname.
+  const getDataByPath = () => {
+    if (pathname === "/kursy-massage") {
+      return courseOfMassage;
+    }
+    if (pathname === "/kursy-kosmetologa") {
+      return courseOfCosmetics;
+    }
+    return service;
+  };
+
+  // State to store filtered data.
+  const [filteredServices, setFilteredServices] = useState(getDataByPath());
+
+  // Update filtered data when store data or pathname changes.
+  useEffect(() => {
+    setFilteredServices(getDataByPath());
+  }, [service, courseOfMassage, courseOfCosmetics, pathname]);
+
+  // Debounced city search with dual query logic.
+  const searchCities = useCallback(async (searchTerm) => {
+    setIsLoadingCities(true);
+    try {
+      let whereObj = {};
+      if (/[А-Яа-яЁё]/.test(searchTerm)) {
+        whereObj = {
+          $or: [
+            { name: { $regex: `^${searchTerm}`, $options: "i" } },
+            { name: { $regex: `^${transliterate(searchTerm)}`, $options: "i" } }
+          ]
+        };
+      } else {
+        whereObj = {
+          name: { $regex: `^${searchTerm}`, $options: "i" }
+        };
+      }
+      const where = encodeURIComponent(JSON.stringify(whereObj));
+      const response = await fetch(
+        `https://parseapi.back4app.com/classes/City?limit=5&order=name&keys=name,country,countryCode,cityId&where=${where}`,
+        {
+          headers: {
+            "X-Parse-Application-Id": "8OqPs7Pwqv4IGArgwPU8NNR2DXazz13rfoLGqPQw",
+            "X-Parse-Master-Key": "mU0TGsffKRtfn6l9KvLcPykabYyZwnywFUCyGtYv",
+          },
+        }
+      );
+      const data = await response.json();
+      setCitySuggestions(data.results);
+    } catch (error) {
+      console.error("Error fetching cities:", error);
+    } finally {
+      setIsLoadingCities(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    const delayDebounce = setTimeout(() => {
+      if (citySearch.length > 2) {
+        searchCities(citySearch);
+        setShowCitySuggestions(true);
+      } else {
+        setShowCitySuggestions(false);
+      }
+    }, 300);
+    return () => clearTimeout(delayDebounce);
+  }, [citySearch, searchCities]);
+
+  // Close suggestions when clicking outside.
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (citySearchRef.current && !citySearchRef.current.contains(event.target)) {
+        setShowCitySuggestions(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleCitySelect = (city) => {
+    setCitySearch(city.name);
+    setShowCitySuggestions(false);
+  };
 
   // Filter criteria state.
-  // Use the actual duration strings from your data.
   const [filters, setFilters] = useState({
-    durations: [], // e.g. ["1 час", "1.30 часа", "2 часа", "3 часа"]
-    kind: "",      // "massage" or "spa"
-    forWhom: "",   // "women", "men", or "both"
+    durations: [], // e.g., ["1 час", "1.30 часа", "2 часа", "3 часа"]
+    kind: "", // "massage" or "spa"
+    forWhom: "", // "women", "men", or "both"
     priceFrom: "",
     priceTo: "",
   });
 
-  // Filtered services to display.
-  const [filteredServices, setFilteredServices] = useState(service);
-
-  // Update filteredServices when the service data changes.
-  useEffect(() => {
-    setFilteredServices(service);
-  }, [service]);
-
-  // Handler for duration checkboxes.
+  // Handlers for filter changes.
   const handleDurationChange = (e) => {
     const durationValue = e.target.getAttribute("data-duration");
-    if (e.target.checked) {
-      setFilters((prev) => ({
-        ...prev,
-        durations: [...prev.durations, durationValue],
-      }));
-    } else {
-      setFilters((prev) => ({
-        ...prev,
-        durations: prev.durations.filter((d) => d !== durationValue),
-      }));
-    }
+    setFilters((prev) => {
+      const durations = e.target.checked
+        ? [...prev.durations, durationValue]
+        : prev.durations.filter((d) => d !== durationValue);
+      return { ...prev, durations };
+    });
   };
 
-  // Handler for kind radio buttons.
   const handleKindChange = (e) => {
     setFilters((prev) => ({
       ...prev,
@@ -53,7 +156,6 @@ export default function Footer() {
     }));
   };
 
-  // Handler for forWhom radio buttons.
   const handleForWhomChange = (e) => {
     setFilters((prev) => ({
       ...prev,
@@ -61,7 +163,6 @@ export default function Footer() {
     }));
   };
 
-  // Handler for price input fields.
   const handlePriceChange = (e) => {
     const { name, value } = e.target;
     setFilters((prev) => ({
@@ -70,35 +171,40 @@ export default function Footer() {
     }));
   };
 
-  // Apply filters to the service list.
+  // Apply filters to the selected data.
   const handleApplyFilters = () => {
-    const filtered = service.filter((item) => {
-      // Duration check: if any duration filters are selected,
-      // the service duration must match one of the selected values.
+    const filtered = getDataByPath().filter((item) => {
+      // Duration filter
       if (filters.durations.length && !filters.durations.includes(item.duration)) {
         return false;
       }
-      // Kind check: if set, the service category must include the selected kind.
+      // Kind filter
       if (filters.kind && !item.category.includes(filters.kind)) {
         return false;
       }
-      // For Whom check: if set, the service category must include the selected forWhom.
+      // For Whom filter
       if (filters.forWhom && !item.category.includes(filters.forWhom)) {
         return false;
       }
-      // Price check.
-      if (filters.priceFrom && Number(item.price) < Number(filters.priceFrom)) {
-        return false;
+      // Price filter (adjust if price is an object)
+      if (filters.priceFrom) {
+        const priceValue = typeof item.price === "object" ? item.price.group : item.price;
+        if (Number(priceValue) < Number(filters.priceFrom)) {
+          return false;
+        }
       }
-      if (filters.priceTo && Number(item.price) > Number(filters.priceTo)) {
-        return false;
+      if (filters.priceTo) {
+        const priceValue = typeof item.price === "object" ? item.price.group : item.price;
+        if (Number(priceValue) > Number(filters.priceTo)) {
+          return false;
+        }
       }
       return true;
     });
     setFilteredServices(filtered);
   };
 
-  // Clear all filters.
+  // Clear filters.
   const handleClearFilters = () => {
     setFilters({
       durations: [],
@@ -107,16 +213,86 @@ export default function Footer() {
       priceFrom: "",
       priceTo: "",
     });
-    setFilteredServices(service);
+    setFilteredServices(getDataByPath());
   };
 
   return (
     <>
       <header>
         <div className="wrapper">
+          {/* Top row with Breadcrumbs and City Selector */}
+          <div
+            className="flex"
+            style={{
+              paddingTop: "15px",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <Breadcrumbs />
+            {/* City Search */}
+            <div
+              className="city-search-container"
+              ref={citySearchRef}
+              style={{ position: "relative", marginLeft: "20px" }}
+            >
+              <input
+                type="text"
+                value={citySearch}
+                onChange={(e) => setCitySearch(e.target.value)}
+                placeholder="Поиск города..."
+                style={{
+                  padding: "8px 12px",
+                  width: "200px",
+                  borderRadius: "4px",
+                  border: "1px solid #ddd",
+                  fontSize: "14px",
+                  backgroundColor: "#fff",
+                }}
+              />
+              {showCitySuggestions && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "100%",
+                    left: 0,
+                    right: 0,
+                    backgroundColor: "white",
+                    border: "1px solid #ddd",
+                    borderRadius: "4px",
+                    maxHeight: "300px",
+                    overflowY: "auto",
+                    zIndex: 1000,
+                    boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
+                  }}
+                >
+                  {isLoadingCities ? (
+                    <div style={{ padding: "8px 12px", color: "#666" }}>Загрузка...</div>
+                  ) : citySuggestions.length > 0 ? (
+                    citySuggestions.map((city) => (
+                      <div
+                        key={city.cityId}
+                        onClick={() => handleCitySelect(city)}
+                        style={{
+                          padding: "8px 12px",
+                          cursor: "pointer",
+                          fontSize: "14px",
+                        }}
+                      >
+                        {city.name}, {city.country}
+                      </div>
+                    ))
+                  ) : (
+                    <div style={{ padding: "8px 12px", color: "#666" }}>Город не найден</div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+
           <div className="header_items">
             <div className="header_logo">
-              <a href={`${pathname}`}>
+              <a href={pathname}>
                 <span>
                   <img src="img/logo.jpg" alt="Массаж и Спа процедуры - Адлер" />
                 </span>
@@ -248,7 +424,7 @@ export default function Footer() {
                   />
                   <label htmlFor="flkind1">Массаж</label>
                 </div>
-                <div className="procedure_for_whom_radio">
+                <div className="procedure_kind_radio">
                   <input
                     className="custom_radio custom_radio_kind"
                     type="radio"
@@ -353,16 +529,24 @@ export default function Footer() {
 
             {/* Display filtered services */}
             <div className="search_menu_products">
-              {filteredServices.map((serviceItem) => (
-                <ServiceCard key={serviceItem.id} service={serviceItem} />
-              ))}
+              {filteredServices && filteredServices.length > 0 ? (
+                filteredServices.map((item) =>
+                  // Render courses or service cards based on category.
+                  item.category.includes("courses") ? (
+                    <CoursesCard key={item.id} service={item} />
+                  ) : (
+                    <ServiceCard key={item.id} service={item} />
+                  )
+                )
+              ) : (
+                <p style={{ padding: "8px 12px" }}>Нет данных для отображения.</p>
+              )}
             </div>
           </div>
 
-          {/* Mobile Filters (example – similar logic can be applied) */}
+          {/* Mobile Filters (if needed) */}
           <div className="search_menu_filters mobile">
             <div type="button" className="filters_close_btn"></div>
-            {/* You can duplicate the filter inputs here with the same onChange handlers */}
             <button
               type="button"
               className="submit_filters mobile btn"
@@ -380,6 +564,8 @@ export default function Footer() {
           </div>
         </div>
       </header>
+
+      {/* Mobile Menu */}
       <div className={`mob_menu btn_to ${sidebar ? "mob_menu_open" : ""}`}>
         <div id="menu_mob" className="fix_menu">
           {pathname === "/" && (
