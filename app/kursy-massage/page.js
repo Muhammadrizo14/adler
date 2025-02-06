@@ -7,7 +7,7 @@ import useProductStore from "@/app/stores/useProductStore";
 export default function Page() {
   const [cartPopup, setCartPopup] = useState(false)
   const [orderSent, setOrderSent] = useState(false)
-  const {courseOfMassage, cart} = useProductStore();
+  const {courseOfMassage, cart, removeFromCart} = useProductStore();
   return (
     <div>
       <div className="mob_menu btn_to">

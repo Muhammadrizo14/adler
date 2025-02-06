@@ -1,52 +1,155 @@
 "use client";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import CoursesCard from "@/app/components/CoursesCard";
-import Link from "next/link";
-import useProductStore from "../../stores/useProductStore";
 import ServiceCard from "@/app/components/ServiceCard";
 import Breadcrumbs from "@/app/components/Breadcrumb";
+import Link from "next/link";
+import useProductStore from "../../stores/useProductStore";
 
 export default function Header() {
   const pathname = usePathname();
-  const [search, setSearch] = useState(false);
+  const { service, courseOfMassage, courseOfCosmetics } = useProductStore();
+  const [filterService, setFilterService] = useState(false);
   const [sidebar, setSidebar] = useState(false);
-  const {
-    service,
-    courseOfMassage, // data for /kursy-massage
-    courseOfCosmetics, // data for /kursy-kosmetologa
-  } = useProductStore();
-  const [citySearch, setCitySearch] = useState("");
-  const [citySuggestions, setCitySuggestions] = useState([]);
-  const [showCitySuggestions, setShowCitySuggestions] = useState(false);
-  const [isLoadingCities, setIsLoadingCities] = useState(false);
-  const citySearchRef = useRef(null);
 
-  // Simple transliteration function: Cyrillic to Latin.
-  const transliterate = (text) => {
-    const rusToEngMap = {
-      'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd',
-      'е': 'e', 'ё': 'yo', 'ж': 'zh', 'з': 'z', 'и': 'i',
-      'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n',
-      'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't',
-      'у': 'u', 'ф': 'f', 'х': 'kh', 'ц': 'ts', 'ч': 'ch',
-      'ш': 'sh', 'щ': 'sch', 'ъ': '', 'ы': 'y', 'ь': '',
-      'э': 'e', 'ю': 'yu', 'я': 'ya',
-      'А': 'A', 'Б': 'B', 'В': 'V', 'Г': 'G', 'Д': 'D',
-      'Е': 'E', 'Ё': 'Yo', 'Ж': 'Zh', 'З': 'Z', 'И': 'I',
-      'Й': 'Y', 'К': 'K', 'Л': 'L', 'М': 'M', 'Н': 'N',
-      'О': 'O', 'П': 'P', 'Р': 'R', 'С': 'S', 'Т': 'T',
-      'У': 'U', 'Ф': 'F', 'Х': 'Kh', 'Ц': 'Ts', 'Ч': 'Ch',
-      'Ш': 'Sh', 'Щ': 'Sch', 'Ъ': '', 'Ы': 'Y', 'Ь': '',
-      'Э': 'E', 'Ю': 'Yu', 'Я': 'Ya'
+  // For region search (unchanged)
+  const regions = [
+
+    "Республика Адыгея",
+    "Республика Алтай",
+    "Республика Башкортостан",
+    "Республика Бурятия",
+    "Чеченская Республика",
+    "Чувашская Республика",
+    "Республика Дагестан",
+    "Республика Ингушетия",
+    "Кабардино-Балкарская Республика",
+    "Республика Калмыкия",
+    "Карачаево-Черкесская Республика",
+    "Республика Карелия",
+    "Республика Коми",
+    "Республика Марий Эл",
+    "Республика Мордовия",
+    "Республика Северная Осетия — Алания",
+    "Республика Татарстан",
+    "Республика Тыва",
+    "Удмуртская Республика",
+    "Республика Хакасия",
+    "Республика Крым",
+    "Амурская область",
+    "Архангельская область",
+    "Астраханская область",
+    "Белгородская область",
+    "Брянская область",
+    "Челябинская область",
+    "Иркутская область",
+    "Ивановская область",
+    "Калининградская область",
+    "Калужская область",
+    "Кемеровская область",
+    "Кировская область",
+    "Костромская область",
+    "Курганская область",
+    "Курская область",
+    "Ленинградская область",
+    "Липецкая область",
+    "Магаданская область",
+    "Московская область",
+    "Мурманская область",
+    "Нижегородская область",
+    "Новгородская область",
+    "Новосибирская область",
+    "Омская область",
+    "Оренбургская область",
+    "Орловская область",
+    "Пензенская область",
+    "Псковская область",
+    "Ростовская область",
+    "Рязанская область",
+    "Самарская область",
+    "Саратовская область",
+    "Сахалинская область",
+    "Свердловская область",
+    "Смоленская область",
+    "Тамбовская область",
+    "Томская область",
+    "Тульская область",
+    "Тверская область",
+    "Тюменская область",
+    "Ульяновская область",
+    "Владимирская область",
+    "Волгоградская область",
+    "Вологодская область",
+    "Воронежская область",
+    "Ярославская область",
+    "Алтайский край",
+    "Камчатский край",
+    "Хабаровский край",
+    "Краснодарский край",
+    "Красноярский край",
+    "Пермский край",
+    "Приморский край",
+    "Ставропольский край",
+    "Забайкальский край",
+    "Москва",
+    "Санкт-Петербург",
+    "Севастополь",
+    "Еврейская автономная область",
+    "Чукотский автономный округ",
+    "Ханты-Мансийский автономный округ — Югра",
+    "Ненецкий автономный округ",
+    "Ямало-Ненецкий автономный округ"
+  ];
+  const [regionSearch, setRegionSearch] = useState("");
+  const [filteredRegions, setFilteredRegions] = useState([]);
+  const regionSearchRef = useRef(null);
+
+  useEffect(() => {
+    if (regionSearch.trim() !== "") {
+      const filtered = regions.filter((region) =>
+        region.toLowerCase().includes(regionSearch.toLowerCase())
+      );
+      setFilteredRegions(filtered);
+    } else {
+      setFilteredRegions([]);
+    }
+  }, [regionSearch]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (regionSearchRef.current && !regionSearchRef.current.contains(event.target)) {
+        setFilteredRegions([]);
+      }
     };
-    return text
-      .split('')
-      .map((char) => rusToEngMap[char] || char)
-      .join('');
-  };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
-  // Select data based on pathname.
+  // Our filters state.
+  // For courses pages ("/kursy-massage" and "/kursy-kosmetologa") we use tag-based filters.
+  // For the homepage (pathname === "/") we filter by durations, kind, and forWhom.
+  // Plus a common price filter.
+  const [filters, setFilters] = useState({
+    // Courses pages filters:
+    medicalEducation: "", // "medical" or "non-medical"
+    learningFormat: "",   // "group", "individual", "distance", "online"
+    courseType: "",       // "beginner" ("с нуля") or "advanced" ("повышение квалификации")
+    mainCategory: "",     // Only used on the massage page (e.g. "massage", "tattoo", "pmu")
+    subCategory: "",      // For massage page: "group" or "individual"
+    // Common price filter:
+    priceFrom: "",
+    priceTo: "",
+    // Home page filters:
+    durations: [],
+    kind: "",    // e.g. "massage", "spa"
+    forWhom: ""  // will match if the item's category includes "women" or "men"
+  });
+
+  // This will hold the filtered data to be rendered.
+  const [filteredServices, setFilteredServices] = useState([]);
+
+  // Returns the full data for the current page.
   const getDataByPath = () => {
     if (pathname === "/kursy-massage") {
       return courseOfMassage;
@@ -57,200 +160,224 @@ export default function Header() {
     return service;
   };
 
-  // State to store filtered data.
-  const [filteredServices, setFilteredServices] = useState(getDataByPath());
-
-  // Update filtered data when store data or pathname changes.
+  // Filtering logic: runs whenever filters, data, or pathname change.
   useEffect(() => {
-    setFilteredServices(getDataByPath());
-  }, [service, courseOfMassage, courseOfCosmetics, pathname]);
+    const data = getDataByPath();
+    let filtered = data;
 
-  // Debounced city search with dual query logic.
-  const searchCities = useCallback(async (searchTerm) => {
-    setIsLoadingCities(true);
-    try {
-      let whereObj = {};
-      if (/[А-Яа-яЁё]/.test(searchTerm)) {
-        whereObj = {
-          $or: [
-            { name: { $regex: `^${searchTerm}`, $options: "i" } },
-            { name: { $regex: `^${transliterate(searchTerm)}`, $options: "i" } }
-          ]
-        };
-      } else {
-        whereObj = {
-          name: { $regex: `^${searchTerm}`, $options: "i" }
-        };
-      }
-      const where = encodeURIComponent(JSON.stringify(whereObj));
-      const response = await fetch(
-        `https://parseapi.back4app.com/classes/City?limit=5&order=name&keys=name,country,countryCode,cityId&where=${where}`,
-        {
-          headers: {
-            "X-Parse-Application-Id": "8OqPs7Pwqv4IGArgwPU8NNR2DXazz13rfoLGqPQw",
-            "X-Parse-Master-Key": "mU0TGsffKRtfn6l9KvLcPykabYyZwnywFUCyGtYv",
-          },
+    // --- For Courses Pages ("/kursy-massage" and "/kursy-kosmetologa") ---
+    if (pathname === "/kursy-kosmetologa" || pathname === "/kursy-massage") {
+      // Filter by Medical Education.
+      if (filters.medicalEducation) {
+        if (filters.medicalEducation === "medical") {
+          filtered = filtered.filter(item =>
+            item.tags && item.tags.includes("с Медицинским образованием")
+          );
+        } else if (filters.medicalEducation === "non-medical") {
+          filtered = filtered.filter(item =>
+            item.tags && item.tags.includes("без Медицинского образования")
+          );
         }
-      );
-      const data = await response.json();
-      setCitySuggestions(data.results);
-    } catch (error) {
-      console.error("Error fetching cities:", error);
-    } finally {
-      setIsLoadingCities(false);
+      }
+      // Filter by Learning Format.
+      if (filters.learningFormat) {
+        switch (filters.learningFormat) {
+          case "group":
+            filtered = filtered.filter(item =>
+              item.tags && item.tags.includes("группа")
+            );
+            break;
+          case "individual":
+            filtered = filtered.filter(item =>
+              item.tags && item.tags.includes("индивидуальное")
+            );
+            break;
+          case "distance":
+            filtered = filtered.filter(item =>
+              item.tags && item.tags.includes("Заочное")
+            );
+            break;
+          case "online":
+            filtered = filtered.filter(item =>
+              item.tags && item.tags.includes("Онлайн")
+            );
+            break;
+          default:
+            break;
+        }
+      }
+      // Filter by Course Type.
+      if (filters.courseType) {
+        if (filters.courseType === "beginner") {
+          filtered = filtered.filter(item =>
+            item.tags && item.tags.includes("с нуля")
+          );
+        } else if (filters.courseType === "advanced") {
+          filtered = filtered.filter(item =>
+            item.tags && item.tags.includes("повышение квалификации")
+          );
+        }
+      }
+      // For massage page: filter by mainCategory and optionally subCategory.
+      if (pathname === "/kursy-massage" && filters.mainCategory) {
+        // Example: check for the "Массаж" tag.
+        filtered = filtered.filter(item =>
+          item.tags && item.tags.includes("Массаж")
+        );
+        if (filters.subCategory) {
+          if (filters.subCategory === "group") {
+            filtered = filtered.filter(item =>
+              item.tags && item.tags.includes("группа")
+            );
+          } else if (filters.subCategory === "individual") {
+            filtered = filtered.filter(item =>
+              item.tags && item.tags.includes("индивидуальное")
+            );
+          }
+        }
+      }
     }
-  }, []);
 
-  useEffect(() => {
-    const delayDebounce = setTimeout(() => {
-      if (citySearch.length > 2) {
-        searchCities(citySearch);
-        setShowCitySuggestions(true);
-      } else {
-        setShowCitySuggestions(false);
+    // --- For Home Page (pathname === "/") ---
+    if (pathname === "/") {
+      // Filter by Duration.
+      if (filters.durations.length > 0) {
+        filtered = filtered.filter(item =>
+          filters.durations.some(duration =>
+            item.duration && item.duration.includes(duration)
+          )
+        );
       }
-    }, 300);
-    return () => clearTimeout(delayDebounce);
-  }, [citySearch, searchCities]);
-
-  // Close suggestions when clicking outside.
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (citySearchRef.current && !citySearchRef.current.contains(event.target)) {
-        setShowCitySuggestions(false);
+      // Filter by Kind.
+      if (filters.kind) {
+        filtered = filtered.filter(item =>
+          item.category && item.category.includes(filters.kind)
+        );
       }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+      // Filter by "For Whom": Here we check if the item's category includes the filter value ("women" or "men").
+      if (filters.forWhom) {
+        filtered = filtered.filter(item =>
+          item.category && item.category.includes(filters.forWhom)
+        );
+      }
+    }
 
-  const handleCitySelect = (city) => {
-    setCitySearch(city.name);
-    setShowCitySuggestions(false);
-  };
+    // --- Common Price Filter for All Pages ---
+    if (filters.priceFrom) {
+      filtered = filtered.filter(item => {
+        const prices = typeof item.price === "object"
+          ? Object.values(item.price).filter(p => p != null)
+          : [item.price];
+        return prices.some(price => price >= parseInt(filters.priceFrom, 10));
+      });
+    }
+    if (filters.priceTo) {
+      filtered = filtered.filter(item => {
+        const prices = typeof item.price === "object"
+          ? Object.values(item.price).filter(p => p != null)
+          : [item.price];
+        return prices.some(price => price <= parseInt(filters.priceTo, 10));
+      });
+    }
 
-  // Filter criteria state.
-  const [filters, setFilters] = useState({
-    durations: [], // e.g., ["1 час", "1.30 часа", "2 часа", "3 часа"]
-    kind: "", // "massage" or "spa"
-    forWhom: "", // "women", "men", or "both"
-    priceFrom: "",
-    priceTo: "",
-  });
+    setFilteredServices(filtered);
+  }, [filters, service, courseOfMassage, courseOfCosmetics, pathname]);
 
   // Handlers for filter changes.
+  const handlePriceChange = (e) => {
+    setFilters((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }));
+  };
+
   const handleDurationChange = (e) => {
-    const durationValue = e.target.getAttribute("data-duration");
+    const duration = e.target.getAttribute("data-duration");
     setFilters((prev) => {
-      const durations = e.target.checked
-        ? [...prev.durations, durationValue]
-        : prev.durations.filter((d) => d !== durationValue);
-      return { ...prev, durations };
+      let newDurations = [...prev.durations];
+      if (e.target.checked) {
+        newDurations.push(duration);
+      } else {
+        newDurations = newDurations.filter((d) => d !== duration);
+      }
+      return { ...prev, durations: newDurations };
     });
   };
 
   const handleKindChange = (e) => {
-    setFilters((prev) => ({
-      ...prev,
-      kind: e.target.getAttribute("data-kind"),
-    }));
+    const kind = e.target.getAttribute("data-kind");
+    setFilters((prev) => ({ ...prev, kind }));
   };
 
   const handleForWhomChange = (e) => {
+    const forWhom = e.target.getAttribute("data-for_whom");
+    setFilters((prev) => ({ ...prev, forWhom }));
+  };
+
+  const handleFilterChange = (field, value) => {
     setFilters((prev) => ({
       ...prev,
-      forWhom: e.target.getAttribute("data-for_whom"),
+      [field]: value
     }));
   };
 
-  const handlePriceChange = (e) => {
-    const { name, value } = e.target;
-    setFilters((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  // Apply filters to the selected data.
-  const handleApplyFilters = () => {
-    const filtered = getDataByPath().filter((item) => {
-      // Duration filter
-      if (filters.durations.length && !filters.durations.includes(item.duration)) {
-        return false;
-      }
-      // Kind filter
-      if (filters.kind && !item.category.includes(filters.kind)) {
-        return false;
-      }
-      // For Whom filter
-      if (filters.forWhom && !item.category.includes(filters.forWhom)) {
-        return false;
-      }
-      // Price filter (adjust if price is an object)
-      if (filters.priceFrom) {
-        const priceValue = typeof item.price === "object" ? item.price.group : item.price;
-        if (Number(priceValue) < Number(filters.priceFrom)) {
-          return false;
-        }
-      }
-      if (filters.priceTo) {
-        const priceValue = typeof item.price === "object" ? item.price.group : item.price;
-        if (Number(priceValue) > Number(filters.priceTo)) {
-          return false;
-        }
-      }
-      return true;
-    });
-    setFilteredServices(filtered);
-  };
-
-  // Clear filters.
   const handleClearFilters = () => {
     setFilters({
-      durations: [],
-      kind: "",
-      forWhom: "",
+      medicalEducation: "",
+      learningFormat: "",
+      courseType: "",
+      mainCategory: "",
+      subCategory: "",
       priceFrom: "",
       priceTo: "",
+      durations: [],
+      kind: "",
+      forWhom: ""
     });
-    setFilteredServices(getDataByPath());
   };
+
+  // Filtering is reactive so handleApplyFilters can be an empty function.
+  const handleApplyFilters = () => {};
+
+  // Update filtered services when data changes.
+  useEffect(() => {
+    setFilteredServices(getDataByPath());
+  }, [service, courseOfMassage, courseOfCosmetics, pathname]);
 
   return (
     <>
       <header>
         <div className="wrapper">
-          {/* Top row with Breadcrumbs and City Selector */}
+          {/* Top row with Breadcrumbs and Region Selector */}
           <div
             className="flex"
             style={{
               paddingTop: "15px",
               justifyContent: "space-between",
-              alignItems: "center",
+              alignItems: "center"
             }}
           >
             <Breadcrumbs />
-            {/* City Search */}
             <div
-              className="city-search-container"
-              ref={citySearchRef}
+              className="region-search-container"
+              ref={regionSearchRef}
               style={{ position: "relative", marginLeft: "20px" }}
             >
               <input
                 type="text"
-                value={citySearch}
-                onChange={(e) => setCitySearch(e.target.value)}
-                placeholder="Поиск города..."
+                value={regionSearch}
+                onChange={(e) => setRegionSearch(e.target.value)}
+                placeholder="Поиск региона..."
                 style={{
                   padding: "8px 12px",
                   width: "200px",
                   borderRadius: "4px",
                   border: "1px solid #ddd",
                   fontSize: "14px",
-                  backgroundColor: "#fff",
+                  backgroundColor: "#fff"
                 }}
               />
-              {showCitySuggestions && (
+              {filteredRegions.length > 0 && (
                 <div
                   style={{
                     position: "absolute",
@@ -263,33 +390,31 @@ export default function Header() {
                     maxHeight: "300px",
                     overflowY: "auto",
                     zIndex: 1000,
-                    boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
+                    boxShadow: "0 2px 5px rgba(0,0,0,0.1)"
                   }}
                 >
-                  {isLoadingCities ? (
-                    <div style={{ padding: "8px 12px", color: "#666" }}>Загрузка...</div>
-                  ) : citySuggestions.length > 0 ? (
-                    citySuggestions.map((city) => (
-                      <div
-                        key={city.cityId}
-                        onClick={() => handleCitySelect(city)}
-                        style={{
-                          padding: "8px 12px",
-                          cursor: "pointer",
-                          fontSize: "14px",
-                        }}
-                      >
-                        {city.name}, {city.country}
-                      </div>
-                    ))
-                  ) : (
-                    <div style={{ padding: "8px 12px", color: "#666" }}>Город не найден</div>
-                  )}
+                  {filteredRegions.map((region, index) => (
+                    <div
+                      key={index}
+                      onClick={() => {
+                        setRegionSearch(region);
+                        setFilteredRegions([]);
+                      }}
+                      style={{
+                        padding: "8px 12px",
+                        cursor: "pointer",
+                        fontSize: "14px"
+                      }}
+                    >
+                      {region}
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
           </div>
 
+          {/* Header items: logo, search, contact, burger menu */}
           <div className="header_items">
             <div className="header_logo">
               <a href={pathname}>
@@ -332,7 +457,7 @@ export default function Header() {
               <div className="header_searchbar">
                 <div className="search_icon"></div>
                 <input
-                  onClick={() => setSearch(true)}
+                  onClick={() => setFilterService(true)}
                   className="live_search"
                   type="text"
                   name="search"
@@ -347,139 +472,280 @@ export default function Header() {
             </div>
             <div
               className={`burger ${sidebar ? "burger_active" : ""}`}
-              onClick={() => setSidebar((prevState) => !prevState)}
+              onClick={() => setSidebar(prevState => !prevState)}
             >
               <div className="burger_icon"></div>
             </div>
           </div>
 
           {/* Filter & Search Menu */}
-          <div className={`header_search_menu ${search ? "active" : ""}`}>
+          <div className={`header_search_menu ${filterService ? "active" : ""}`}>
             <div className="search_menu_filters">
-              {/* Duration Filter */}
-              <div className="procedure_duration procedure">
-                <h2 className="filter_title">Длительность процедуры:</h2>
-                <div className="procedure_duration_checkbox">
-                  <input
-                    className="custom_checkbox"
-                    type="checkbox"
-                    name="filter_duration"
-                    id="fldur1"
-                    data-duration="1 час"
-                    onChange={handleDurationChange}
-                    checked={filters.durations.includes("1 час")}
-                  />
-                  <label htmlFor="fldur1">1 час</label>
-                </div>
-                <div className="procedure_duration_checkbox">
-                  <input
-                    className="custom_checkbox"
-                    type="checkbox"
-                    name="filter_duration"
-                    id="fldur2"
-                    data-duration="1.30 часа"
-                    onChange={handleDurationChange}
-                    checked={filters.durations.includes("1.30 часа")}
-                  />
-                  <label htmlFor="fldur2">1.30 часа</label>
-                </div>
-                <div className="procedure_duration_checkbox">
-                  <input
-                    className="custom_checkbox"
-                    type="checkbox"
-                    name="filter_duration"
-                    id="fldur3"
-                    data-duration="2 часа"
-                    onChange={handleDurationChange}
-                    checked={filters.durations.includes("2 часа")}
-                  />
-                  <label htmlFor="fldur3">2 часа</label>
-                </div>
-                <div className="procedure_duration_checkbox">
-                  <input
-                    className="custom_checkbox"
-                    type="checkbox"
-                    name="filter_duration"
-                    id="fldur4"
-                    data-duration="3 часа"
-                    onChange={handleDurationChange}
-                    checked={filters.durations.includes("3 часа")}
-                  />
-                  <label htmlFor="fldur4">3 часа</label>
-                </div>
-              </div>
+              {/* For Cosmetology Courses */}
+              {pathname === "/kursy-kosmetologa" && (
+                <>
+                  {/* Cosmetology Courses Filters */}
+                  <div className="procedure procedure_medical">
+                    <h2 className="filter_title">Медицинское образование:</h2>
+                    <div className="procedure_medical_radio">
+                      <input
+                        type="radio"
+                        className="custom_radio"
+                        name="medicalEducation"
+                        id="med_yes"
+                        value="medical"
+                        onChange={() => handleFilterChange("medicalEducation", "medical")}
+                        checked={filters.medicalEducation === "medical"}
+                      />
+                      <label htmlFor="med_yes">С медицинским образованием</label>
+                    </div>
+                    <div className="procedure_medical_radio">
+                      <input
+                        type="radio"
+                        className="custom_radio"
+                        name="medicalEducation"
+                        id="med_no"
+                        value="non-medical"
+                        onChange={() => handleFilterChange("medicalEducation", "non-medical")}
+                        checked={filters.medicalEducation === "non-medical"}
+                      />
+                      <label htmlFor="med_no">Без медицинского образования</label>
+                    </div>
+                  </div>
 
-              {/* Kind Filter */}
-              <div className="procedure_kind procedure">
-                <h2 className="filter_title">Вид услуги</h2>
-                <div className="procedure_kind_radio">
-                  <input
-                    className="custom_radio custom_radio_kind"
-                    type="radio"
-                    name="filter_kind"
-                    id="flkind1"
-                    data-kind="massage"
-                    onChange={handleKindChange}
-                    checked={filters.kind === "massage"}
-                  />
-                  <label htmlFor="flkind1">Массаж</label>
-                </div>
-                <div className="procedure_kind_radio">
-                  <input
-                    className="custom_radio custom_radio_kind"
-                    type="radio"
-                    name="filter_kind"
-                    id="flkind2"
-                    data-kind="spa"
-                    onChange={handleKindChange}
-                    checked={filters.kind === "spa"}
-                  />
-                  <label htmlFor="flkind2">Спа</label>
-                </div>
-              </div>
+                  <div className="procedure procedure_learning_format">
+                    <h2 className="filter_title">Формат обучения:</h2>
+                    {[
+                      { value: "distance", label: "Заочное" },
+                      { value: "online", label: "Онлайн" },
+                      { value: "group", label: "Очное в группе" },
+                      { value: "individual", label: "Очное индивидуальное" }
+                    ].map((fmt) => (
+                      <div key={fmt.value} className="procedure_learning_checkbox">
+                        <input
+                          type="radio"
+                          className="custom_radio"
+                          name="learningFormat"
+                          id={`format_${fmt.value}`}
+                          value={fmt.value}
+                          onChange={() => handleFilterChange("learningFormat", fmt.value)}
+                          checked={filters.learningFormat === fmt.value}
+                        />
+                        <label htmlFor={`format_${fmt.value}`}>{fmt.label}</label>
+                      </div>
+                    ))}
+                  </div>
 
-              {/* For Whom Filter */}
-              <div className="procedure_for_whom procedure">
-                <h2 className="filter_title">Для кого:</h2>
-                <div className="procedure_for_whom_radio">
-                  <input
-                    className="custom_radio"
-                    type="radio"
-                    name="filter_for_whom"
-                    id="flwhom1"
-                    data-for_whom="women"
-                    onChange={handleForWhomChange}
-                    checked={filters.forWhom === "women"}
-                  />
-                  <label htmlFor="flwhom1">Для женщины</label>
-                </div>
-                <div className="procedure_for_whom_radio">
-                  <input
-                    className="custom_radio"
-                    type="radio"
-                    name="filter_for_whom"
-                    id="flwhom2"
-                    data-for_whom="men"
-                    onChange={handleForWhomChange}
-                    checked={filters.forWhom === "men"}
-                  />
-                  <label htmlFor="flwhom2">Для мужчины</label>
-                </div>
-                <div className="procedure_for_whom_radio">
-                  <input
-                    className="custom_radio"
-                    type="radio"
-                    name="filter_for_whom"
-                    id="flwhom3"
-                    data-for_whom="both"
-                    onChange={handleForWhomChange}
-                    checked={filters.forWhom === "both"}
-                  />
-                  <label htmlFor="flwhom3">Для двоих</label>
-                </div>
-              </div>
+                  <div className="procedure procedure_course_type">
+                    <h2 className="filter_title">Тип курса:</h2>
+                    {[
+                      { value: "beginner", label: "С нуля для новичков" },
+                      { value: "advanced", label: "Для повышения квалификации" }
+                    ].map((type) => (
+                      <div key={type.value} className="procedure_course_checkbox">
+                        <input
+                          type="radio"
+                          className="custom_radio"
+                          name="courseType"
+                          id={`course_${type.value}`}
+                          value={type.value}
+                          onChange={() => handleFilterChange("courseType", type.value)}
+                          checked={filters.courseType === type.value}
+                        />
+                        <label htmlFor={`course_${type.value}`}>{type.label}</label>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
 
-              {/* Price Filter */}
+              {pathname === "/kursy-massage" && (
+                <>
+                  {/* Massage Courses Filters */}
+                  <div className="procedure procedure_medical">
+                    <h2 className="filter_title">Медицинское образование:</h2>
+                    {["medical", "non-medical"].map((type) => (
+                      <div key={type} className="procedure_medical_radio">
+                        <input
+                          type="radio"
+                          className="custom_radio"
+                          name="medicalEducation"
+                          id={`med-${type}`}
+                          value={type}
+                          onChange={() => handleFilterChange("medicalEducation", type)}
+                          checked={filters.medicalEducation === type}
+                        />
+                        <label htmlFor={`med-${type}`}>
+                          {type === "medical" ? "С медицинским образованием" : "Без медицинского образования"}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="procedure procedure_category">
+                    <h2 className="filter_title">Основная категория:</h2>
+                    {["massage", "tattoo", "pmu"].map((cat) => (
+                      <div key={cat} className="procedure_category_radio">
+                        <input
+                          type="radio"
+                          className="custom_radio"
+                          name="mainCategory"
+                          id={`cat-${cat}`}
+                          value={cat}
+                          onChange={() =>
+                            setFilters((prev) => ({
+                              ...prev,
+                              mainCategory: cat,
+                              subCategory: ""
+                            }))
+                          }
+                          checked={filters.mainCategory === cat}
+                        />
+                        <label htmlFor={`cat-${cat}`}>
+                          {{
+                            massage: "Массаж",
+                            tattoo: "Татуировка",
+                            pmu: "Перманентный макияж"
+                          }[cat]}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+
+                  {filters.mainCategory && (
+                    <div className="procedure procedure_subcategory">
+                      <h2 className="filter_title">Подкатегория:</h2>
+                      {[
+                        { value: "beginner", label: "С нуля для новичков" },
+                        { value: "advanced", label: "Для повышения квалификации" },
+                        { value: "group", label: "В группе" },
+                        { value: "individual", label: "Индивидуально" }
+                      ].map((sub) => (
+                        <div key={sub.value} className="procedure_subcategory_checkbox">
+                          <input
+                            type="radio"
+                            className="custom_radio"
+                            name="subCategory"
+                            id={`sub-${sub.value}`}
+                            value={sub.value}
+                            onChange={() => handleFilterChange("subCategory", sub.value)}
+                            checked={filters.subCategory === sub.value}
+                          />
+                          <label htmlFor={`sub-${sub.value}`}>{sub.label}</label>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  <div className="procedure procedure_format">
+                    <h2 className="filter_title">Формат обучения:</h2>
+                    {[
+                      { value: "group", label: "Очное в группе" },
+                      { value: "individual", label: "Очное индивидуальное" },
+                      { value: "distance", label: "Заочное" },
+                      { value: "online", label: "Онлайн" }
+                    ].map((fmt) => (
+                      <div key={fmt.value} className="procedure_format_checkbox">
+                        <input
+                          type="radio"
+                          className="custom_radio"
+                          name="learningFormat"
+                          id={`fmt-${fmt.value}`}
+                          value={fmt.value}
+                          onChange={() => handleFilterChange("learningFormat", fmt.value)}
+                          checked={filters.learningFormat === fmt.value}
+                        />
+                        <label htmlFor={`fmt-${fmt.value}`}>{fmt.label}</label>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="procedure procedure_course_type">
+                    <h2 className="filter_title">Тип курса:</h2>
+                    {[
+                      { value: "beginner", label: "С нуля для новичков" },
+                      { value: "advanced", label: "Для повышения квалификации" }
+                    ].map((type) => (
+                      <div key={type.value} className="procedure_course_checkbox">
+                        <input
+                          type="radio"
+                          className="custom_radio"
+                          name="courseType"
+                          id={`mcourse-${type.value}`}
+                          value={type.value}
+                          onChange={() => handleFilterChange("courseType", type.value)}
+                          checked={filters.courseType === type.value}
+                        />
+                        <label htmlFor={`mcourse-${type.value}`}>{type.label}</label>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+
+              {pathname === "/" && (
+                <>
+                  <div className="procedure_duration procedure">
+                    <h2 className="filter_title">Длительность процедуры:</h2>
+                    {["1 час", "1.30 часа", "2 часа", "3 часа"].map((dur) => (
+                      <div key={dur} className="procedure_duration_checkbox">
+                        <input
+                          className="custom_checkbox"
+                          type="checkbox"
+                          name="filter_duration"
+                          id={`fldur-${dur}`}
+                          data-duration={dur}
+                          onChange={handleDurationChange}
+                          checked={filters.durations.includes(dur)}
+                        />
+                        <label htmlFor={`fldur-${dur}`}>{dur}</label>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="procedure_kind procedure">
+                    <h2 className="filter_title">Вид услуги</h2>
+                    {["massage", "spa"].map((kind) => (
+                      <div key={kind} className="procedure_kind_radio">
+                        <input
+                          className="custom_radio custom_radio_kind"
+                          type="radio"
+                          name="filter_kind"
+                          id={`kind-${kind}`}
+                          data-kind={kind}
+                          onChange={handleKindChange}
+                          checked={filters.kind === kind}
+                        />
+                        <label htmlFor={`kind-${kind}`}>
+                          {kind === "massage" ? "Массаж" : "Спа"}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="procedure_for_whom procedure">
+                    <h2 className="filter_title">Для кого:</h2>
+                    {[
+                      { id: "women", label: "Для женщины" },
+                      { id: "men", label: "Для мужчины" },
+                      { id: "both", label: "Для двоих" }
+                    ].map((item) => (
+                      <div key={item.id} className="procedure_for_whom_radio">
+                        <input
+                          className="custom_radio"
+                          type="radio"
+                          name="filter_for_whom"
+                          id={`forWhom-${item.id}`}
+                          data-for_whom={item.id}
+                          onChange={handleForWhomChange}
+                          checked={filters.forWhom === item.id}
+                        />
+                        <label htmlFor={`forWhom-${item.id}`}>{item.label}</label>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+
+              {/* Price Filter (common for all pages) */}
               <div className="procedure_price procedure">
                 <h2 className="filter_title">Цена:</h2>
                 <div className="filter_price_from_to">
@@ -504,7 +770,6 @@ export default function Header() {
                 </div>
               </div>
 
-              {/* Apply and Clear Buttons */}
               <button
                 type="button"
                 className="submit_filters btn"
@@ -524,15 +789,14 @@ export default function Header() {
             <div
               type="button"
               className="search_close_btn"
-              onClick={() => setSearch(false)}
+              onClick={() => setFilterService(false)}
             ></div>
 
-            {/* Display filtered services */}
+            {/* Display Filtered Services */}
             <div className="search_menu_products">
               {filteredServices && filteredServices.length > 0 ? (
                 filteredServices.map((item) =>
-                  // Render courses or service cards based on category.
-                  item.category.includes("courses") ? (
+                  item.category && item.category.includes("courses") ? (
                     <CoursesCard key={item.id} service={item} />
                   ) : (
                     <ServiceCard key={item.id} service={item} />

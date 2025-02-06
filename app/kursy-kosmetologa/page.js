@@ -10,7 +10,7 @@ import useProductStore from "@/app/stores/useProductStore";
 export default function Page() {
   const [cartPopup, setCartPopup] = useState(false)
   const [orderSent, setOrderSent] = useState(false)
-  const {courseOfCosmetics, cart} = useProductStore();
+  const {courseOfCosmetics, cart, removeFromCart} = useProductStore();
   const [popup, setPopup] = useState(false)
   return (
     <div>
@@ -203,8 +203,44 @@ export default function Page() {
           <form>
             <div className="cart">
               <div className="total_price_wrapper">
-                <h2 className="total_price_title">Итого:</h2>
-                <p className="all_total_price"></p>
+                {cart.length ? (
+                  <>
+                    {cart.map(service => (
+                      <div className="d-flex flex-row shadow-sm card cart-items mt-2 mb-3 animated flipInX"
+                           key={service.id}>
+                        <div className="p-2">
+                          <img src={`${service.image}`} alt={`${service.title}`} style={{maxWidth: "50px"}}/>
+                        </div>
+                        <div className="cart_name p-2 mt-3">
+                          <p className="text-info cart_item_name">{service.title}</p>
+                        </div>
+                        <input name="Товар" type="hidden" value={`${service.name}`}/>
+
+
+                        <div className="cart_rem p-2 mt-3">
+                          <button className="btn badge badge-danger remove_btn" type="button"
+                                  onClick={() => removeFromCart(service.id)}>&times;
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                    <div className="cart_form">
+                      <div className="cart_form_input">
+                        <input name="Имя" type="text" placeholder="Ваше имя"/>
+                      </div>
+                      <div className="cart_form_input">
+                        <input name="Телефон" className="phone_input" type="text" placeholder="Ваш телефон"/>
+                      </div>
+                      <div className="cart_form_submit" onClick={(e) => {
+                        e.preventDefault()
+                        setOrderSent(true),
+                          setCartPopup(false)
+                      }}>
+                        <input className="btn" type="submit" value="Заказать"/>
+                      </div>
+                    </div>
+                  </>
+                ) : ''}
               </div>
             </div>
           </form>
